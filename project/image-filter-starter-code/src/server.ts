@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles, isUrlCheck} from './util/util';
+import { any } from 'bluebird';
 
 (async () => {
 
@@ -28,9 +29,9 @@ import {filterImageFromURL, deleteLocalFiles, isUrlCheck} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
- 
+  
  app.get('/filteredimage',async (req: express.Request,res: express.Response) => {
-  const {image_url} = req.query;
+  let {image_url} = req.query;
 
   if(!image_url || (!image_url.match(/\.(jpeg|jpg|gif|png)$/) && isUrlCheck(image_url))){
     res.status(400)
@@ -38,7 +39,7 @@ import {filterImageFromURL, deleteLocalFiles, isUrlCheck} from './util/util';
   }
 
   try{
-  const result = await filterImageFromURL(image_url);
+  let result = await filterImageFromURL(image_url);
   res.status(200)
       .sendFile(result,{},async function(err){
         if(!err){
